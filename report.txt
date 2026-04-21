@@ -1,0 +1,46 @@
+Prototype High Performance Web Search Engine Report
+==================================================
+
+Group ID: 8
+
+1. Introduction
+This project implements a prototype web search engine in Java for the WT web document collection. The system reads compressed source files, extracts documents, builds an inverted index, and retrieves ranked documents for the given 20 topics. The main goal was to build a working end-to-end retrieval pipeline that is simple, fast enough for the assignment data, and easy to run.
+
+2. Implementation
+The system was implemented in Java using a file-based design.
+
+Main steps:
+- Read all `.GZ` files from the `data` folder.
+- Decompress each file using `GZIPInputStream`.
+- Extract each `<DOC> ... </DOC>` block.
+- Read the `DOCNO` field as the external document identifier.
+- Remove the `DOCHDR` block and HTML tags.
+- Normalize the remaining text.
+- Tokenize the text, remove common stop words, and apply light stemming.
+- Build an inverted index containing terms, document ids, and term frequencies.
+- Save the index to disk as `meta.properties`, `documents.tsv`, and `postings.tsv`.
+
+3. Query Processing and Ranking
+The topics are read from `topics.txt` in TREC format. The current system uses the topic title and description fields when forming a query. Query terms go through the same preprocessing steps as document terms.
+
+For ranking, the system uses BM25. BM25 was selected because it is a standard ranking approach in information retrieval and gives better ranking quality than simple term frequency matching.
+
+4. Output Format
+The output file follows TREC run format:
+
+TopicID Q0 DocID Rank Score GroupID
+
+Example:
+401 Q0 WT02-B12-219 1 43.031221633894 8
+
+5. Web Interface
+A small local web interface was also added. It allows free-text searching over the built index and displays BM25-ranked results in the browser. This helps for testing and demonstration.
+
+6. Complexity
+Index construction scans the collection once and stores term frequencies in an inverted index. Search time depends mainly on the number of postings for the query terms. The implementation is designed to be straightforward and efficient for the assignment-sized collection.
+
+7. Discussion
+The system is a working prototype. It successfully performs indexing, searching, ranking, and run file generation. The preprocessing is intentionally simple, which keeps the implementation easy to understand. Retrieval performance could be improved further by adding stronger stemming, phrase handling, field weighting, or relevance feedback.
+
+8. Conclusion
+This project satisfies the main assignment requirements by implementing a Java-based web search engine prototype with indexing, BM25 ranking, TREC-format output, and a simple search interface.
